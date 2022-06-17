@@ -27,9 +27,11 @@ from keras.layers.core import Dense
 from sklearn.model_selection import GridSearchCV
 from scipy import stats
 from tensorflow.keras.optimizers import Adam
-
-x_bp_df = pd.read_excel('C:/Users/Alexandra/Desktop/вкр/X_bp.xlsx', sheet_name='X_bp.csv')
-x_nup_df = pd.read_excel('C:/Users/Alexandra/Desktop/вкр/X_nup.xlsx', sheet_name='X_nup.csv')
+```
+## Загружаем данные
+```
+x_bp_df = pd.read_excel('C:/Users/HOME/Documents/Бауманка/Итоговый проект/X_bp.xlsx', sheet_name='X_bp.csv')
+x_nup_df = pd.read_excel('C:/Users/HOME/Documents/Бауманка/Итоговый проект/X_nup.xlsx', sheet_name='X_nup.csv')
 ```
 ## Произведено объединение по индексу тип объединения INNER
 
