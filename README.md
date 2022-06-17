@@ -246,7 +246,6 @@ for col in df_norm.columns:
     plt.title('Гистограмма'+ ' ' + col)
     plt.ylabel('Количество элементов')
     seaborn.histplot(data = df_norm[col], kde=True)
-    plt.savefig('C:/Users/Alexandra/Desktop/вкр/ГистограммаНорм.pdf')
     plt.show
 boxplot = df_norm.boxplot(rot=90)
 ```
@@ -409,15 +408,17 @@ def get_model(n_inputs, n_outputs):
 model = get_model(12,1)
 model.summary()
 hist = model.fit(x, y, verbose=0, epochs=2000, validation_data = (x_train, y_train))
+```
 Просмотр графика уменьшения ошибки
-
+```
 df = pd.DataFrame(hist.history)
 
 import matplotlib.pyplot as plt
 
 plt.plot(df)
+```
 Просмотр точности и потерь на тесте
-
+```
 score = model.evaluate(x_test, y_test, verbose=1)
 print('Потери на тесте:', score[0])
 print('Точность на тесте:', score[1])
@@ -435,5 +436,5 @@ np.mean((y-prediction)*(y-prediction), axis=0)
 ```
 ## Сохранение модели
 
-model_path = 'C:/Users/Alexandra/Desktop/вкр/models/my_model_2'
+model_path = 'C:/Users/HOME/Documents/Бауманка/Итоговый проект/ВКР/bpnup_prognoz'
 model.save(model_path)
