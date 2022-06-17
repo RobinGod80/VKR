@@ -1,5 +1,5 @@
 # VKR
-Импортируем библиотеки
+#Импортируем библиотеки
 
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -30,16 +30,16 @@ from tensorflow.keras.optimizers import Adam
 
 x_bp_df = pd.read_excel('C:/Users/Alexandra/Desktop/вкр/X_bp.xlsx', sheet_name='X_bp.csv')
 x_nup_df = pd.read_excel('C:/Users/Alexandra/Desktop/вкр/X_nup.xlsx', sheet_name='X_nup.csv')
-Произведено объединение по индексу тип объединения INNER
+#Произведено объединение по индексу тип объединения INNER
 
 npbp_df = x_bp_df.merge(x_nup_df, left_index=True, right_index=True, how='inner')
 Отсечение неинформативных колонок
 
 npbp_df.drop(columns =['Unnamed: 0_x', 'Unnamed: 0_y'],axis=1,inplace=True)
-Описателььная статистика первоначального набора
+#Описателььная статистика первоначального набора
 
 npbp_df.describe()
-Построение гистограмм первоначальных данных
+#Построение гистограмм первоначальных данных
 
 for col in npbp_df.columns:
     plt.figure(figsize=(6,2))
@@ -47,10 +47,10 @@ for col in npbp_df.columns:
     plt.ylabel('Количество элементов')
     seaborn.histplot(data = npbp_df[col], kde=True)
     plt.show
-Графики взаимосвязей первоначального набора данных
+#Графики взаимосвязей первоначального набора данных
 
 seaborn.pairplot(npbp_df, height=2.5)
-Графики корреляции первоначального набора данных
+#Графики корреляции первоначального набора данных
 
 plt.figure(figsize = (10,3))
 seaborn.heatmap(npbp_df.corr(), cmap= 'rainbow', annot = True, linewidths=1, linecolor='black' )
