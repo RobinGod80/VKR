@@ -1,5 +1,5 @@
 # VKR
-Импортируем библиотеки
+#Импортируем библиотеки
 '''
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -31,7 +31,7 @@ from tensorflow.keras.optimizers import Adam
 x_bp_df = pd.read_excel('C:/Users/Alexandra/Desktop/вкр/X_bp.xlsx', sheet_name='X_bp.csv')
 x_nup_df = pd.read_excel('C:/Users/Alexandra/Desktop/вкр/X_nup.xlsx', sheet_name='X_nup.csv')
 '''
-Произведено объединение по индексу тип объединения INNER
+#Произведено объединение по индексу тип объединения INNER
 
 npbp_df = x_bp_df.merge(x_nup_df, left_index=True, right_index=True, how='inner')
 Отсечение неинформативных колонок
