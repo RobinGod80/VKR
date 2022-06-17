@@ -28,45 +28,53 @@ from sklearn.model_selection import GridSearchCV
 from scipy import stats
 from tensorflow.keras.optimizers import Adam
 ```
-## Загружаем данные
+Загружаем данные и конвертируем в csv
 ```
 x_bp_df = pd.read_excel('C:/Users/HOME/Documents/Бауманка/Итоговый проект/X_bp.xlsx', sheet_name='X_bp.csv')
 x_nup_df = pd.read_excel('C:/Users/HOME/Documents/Бауманка/Итоговый проект/X_nup.xlsx', sheet_name='X_nup.csv')
 ```
-## Произведено объединение по индексу тип объединения INNER
-
+Объединяем по типу INNER
+```
 npbp_df = x_bp_df.merge(x_nup_df, left_index=True, right_index=True, how='inner')
-Отсечение неинформативных колонок
-
+```
+Убираем ненужные колонки
+```
 npbp_df.drop(columns =['Unnamed: 0_x', 'Unnamed: 0_y'],axis=1,inplace=True)
-# Описателььная статистика первоначального набора
-
+```
+## Описателььная статистика первоначального набора
+```
 npbp_df.describe()
-#Построение гистограмм первоначальных данных
-
+```
+Построение гистограмм первоначальных данных
+```
 for col in npbp_df.columns:
     plt.figure(figsize=(6,2))
     plt.title('Гистограмма'+ ' ' + col)
     plt.ylabel('Количество элементов')
     seaborn.histplot(data = npbp_df[col], kde=True)
     plt.show
-# Графики взаимосвязей первоначального набора данных
-
+```
+Графики взаимосвязей первоначального набора данных
+```
 seaborn.pairplot(npbp_df, height=2.5)
-# Графики корреляции первоначального набора данных
-
+```
+Графики корреляции первоначального набора данных
+```
 plt.figure(figsize = (10,3))
 seaborn.heatmap(npbp_df.corr(), cmap= 'rainbow', annot = True, linewidths=1, linecolor='black' )
-# Статистические параметры
-
+```
+### Статистические параметры
+```
 npbp_df.mean()
 npbp_df.median()
 npbp_df.describe().transpose()[['mean','std']]
-Ящик с усами (поиск выбросов)
-
+```
+Ищем выбросы при помощи boxplot
+```
 npbp_df.boxplot(rot=90)
-# Выявление выбросов с помощью метода квартилей и удадение
-
+```
+Выявление выбросов с помощью метода квартилей и удадение
+```
 for x in ['Соотношение матрица-наполнитель']:
     q75,q25 = np.percentile(npbp_df.loc[:,x],[75,25])
     intr_qr = q75-q25
@@ -200,8 +208,9 @@ for x in ['Соотношение матрица-наполнитель']:
 npbp_df.isnull().sum()
 
 npbp_df.duplicated().sum()
-# Статистика, гистограммы и графики после удаления выбросов.
-
+```
+### Статистика, гистограммы и графики после удаления выбросов.
+```
 npbp_df.info()
 npbp_df.describe()
 for col in npbp_df.columns:
@@ -221,15 +230,15 @@ npbp_df.mean()
 npbp_df.median()
 
 npbp_df.describe().transpose()[['mean','std']]
-
-# Нормализация
-
-from sklearn.preprocessing import MinMaxScaler
+```
+## Нормализация
+```
 minmax_scaler = MinMaxScaler ()
 df_norm = minmax_scaler.fit_transform(np.array(npbp_df[['Соотношение матрица-наполнитель','Плотность, кг/м3','модуль упругости, ГПа','Количество отвердителя, м.%','Содержание эпоксидных групп,%_2','Температура вспышки, С_2','Поверхностная плотность, г/м2','Модуль упругости при растяжении, ГПа','Прочность при растяжении, МПа','Потребление смолы, г/м2','Угол нашивки, град','Шаг нашивки','Плотность нашивки']]))
 df_norm = pd.DataFrame(data = df_norm, columns = ['Соотношение матрица-наполнитель','Плотность, кг/м3','модуль упругости, ГПа','Количество отвердителя, м.%','Содержание эпоксидных групп,%_2','Температура вспышки, С_2','Поверхностная плотность, г/м2','Модуль упругости при растяжении, ГПа','Прочность при растяжении, МПа','Потребление смолы, г/м2','Угол нашивки, град','Шаг нашивки','Плотность нашивки'])
-# Статистика и гистраграммы после нормализации
 
+Статистика и гистраграммы после нормализации
+```
 df_norm.head()
 df_norm.describe()
 for col in df_norm.columns:
@@ -240,8 +249,9 @@ for col in df_norm.columns:
     plt.savefig('C:/Users/Alexandra/Desktop/вкр/ГистограммаНорм.pdf')
     plt.show
 boxplot = df_norm.boxplot(rot=90)
-# Разметка данных
-
+```
+Разметка данных
+```
 import splitfolders 
 from sklearn.model_selection import train_test_split
 x_upr=df_norm.drop(['Модуль упругости при растяжении, ГПа'], axis=1)
@@ -260,10 +270,10 @@ print('Размер тренировочного датасета на вход�
 print('Размер тестового датасета на входе:', x_test_pr.shape)
 print('Размер тренировочного датасета на выходе:', y_train_pr.shape)
 print('Размер тестового датасета на выходе:', y_test_pr.shape)
-# Решение задачи с помощью различных методов
+```
 
-# Поиск детерменированного коэфициэнта линейной регрессии
-
+### Линейная регрессия
+```
 Ir = LinearRegression()
 Ir_params = { 'fit_intercept' : ['True','False']}
 GSCV_ir_upr = GridSearchCV(Ir, Ir_params, n_jobs=-1, cv=10)
@@ -280,9 +290,9 @@ Ir_upr_result = pd.DataFrame({
 }, index=['Прочность при растяжении, МПа'])
 
 Ir_upr_result
-
-# Поиск детерменированного коэфициэнта регрессии решающего дерева
-
+```
+Решающее дерево
+```
 from sklearn.tree import DecisionTreeRegressor
 dt = DecisionTreeRegressor()
 dt_params = { 'criterion': ['mse', 'friedman_mse', 'mae']}
@@ -299,17 +309,18 @@ dt_upr_result = pd.DataFrame({
 }, index=['Прочность при растяжении, МПа'])
 
 dt_upr_result
+```
 # Если коэфициент детерминации равен 1, то это значит что регрессия дает адекватный результат. В данном случае результат получился хуже, чем если брать среднее значение.
 
 # Поиск гиперпараметров по разным регрессиям
-
+```
 Ir = LinearRegression()
 Ir.fit(x_train_pr, y_train_pr)
 y_pred_ir = Ir.predict(x_test_pr)
 pl.figure(figsize=(12,10))
 pl.plot(y_pred_ir, 'g', label='prediction')
 pl.plot(y_test_pr.values, label='actual')
-pl.grid(True);
+pl.grid=True;
 
 Ir = LinearRegression()
 Ir.fit(x_train_upr, y_train_upr)
@@ -317,40 +328,12 @@ y_pred_ir = Ir.predict(x_test_upr)
 pl.figure(figsize=(12,10))
 pl.plot(y_pred_ir, 'g', label='prediction')
 pl.plot(y_test_upr.values, label='actual')
-pl.grid(True);
+pl.grid=True;
 
 param_grid = {'n_neighbors': range(1,50)}
 gs = GridSearchCV(knr, param_grid, cv=10, verbose = 1, n_jobs=-1)
 gs.fit(x_train_pr,y_train_pr)
 knn_3 = gs.best_estimator_
-gs.best_params_
-
-knn = KNeighborsRegressor(n_neighbors=5)
-knn.fit(x_train_pr, y_train_pr)
-y_pred_knn = knn.predict(x_test_pr)
-pl.figure(figsize=(12,10))
-pl.plot(y_pred_knn, 'g', label='prediction')
-pl.plot(y_test_pr.values, label='actual')
-pl.grid(True);
-
-param_grid = {'n_neighbors': range(1,50)}
-gs = GridSearchCV(knn, param_grid, cv=10, verbose = 1, n_jobs=-1)
-gs.fit(x_train_upr,y_train_upr)
-knn_3 = gs.best_estimator_
-gs.best_params_
-
-knn = KNeighborsRegressor(n_neighbors=5)
-knn.fit(x_train_upr, y_train_upr)
-y_pred_knn = knn.predict(x_test_upr)
-pl.figure(figsize=(12,10))
-pl.plot(y_pred_knn, 'g', label='prediction')
-pl.plot(y_test_upr.values, label='actual')
-pl.grid(True);
-
-param_grid = {'criterion': ['friedman_mse']}
-gs = GridSearchCV(DecisionTreeRegressor(), param_grid, cv=10, verbose = 1, n_jobs=-1)
-gs.fit(x_train_pr,y_train_pr)
-dt_3 = gs.best_estimator_
 gs.best_params_
 
 dt = DecisionTreeRegressor()
@@ -359,7 +342,7 @@ y_pred_dt = dt.predict(x_test_pr)
 pl.figure(figsize=(12,10))
 pl.plot(y_pred_dt, 'g', label='prediction')
 pl.plot(y_test_pr.values, label='actual')
-pl.grid(True);
+pl.grid=True;
 
 param_grid = {'criterion': ['friedman_mse']}
 gs = GridSearchCV(DecisionTreeRegressor(), param_grid, cv=10, verbose = 1, n_jobs=-1)
@@ -373,20 +356,21 @@ y_pred_dt = dt.predict(x_test_upr)
 pl.figure(figsize=(12,10))
 pl.plot(y_pred_dt, 'g', label='prediction')
 pl.plot(y_test_upr.values, label='actual')
-pl.grid(True);
-Более адекватные значения наблюдаются в KNN регрессии. В дальшейшем обучении будет использоваться она.
+pl.grid=True;
+```
 
-Обучение и создание нейросети
+# Обучение и создание нейросети
 Разметка данных
-
+```
 input_columns_names = ['Плотность, кг/м3','модуль упругости, ГПа','Количество отвердителя, м.%','Содержание эпоксидных групп,%_2','Температура вспышки, С_2','Поверхностная плотность, г/м2','Модуль упругости при растяжении, ГПа','Прочность при растяжении, МПа','Потребление смолы, г/м2','Угол нашивки, град','Шаг нашивки','Плотность нашивки']
 output_columns_names = ['Соотношение матрица-наполнитель']
 x = df_norm[input_columns_names]
 y = df_norm[output_columns_names]
 
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=1)
+```
 Обучение
-
+```
 knn = KNeighborsRegressor()
 param_grid = {
     'n_neighbors': [1,2,5,10,20]}
@@ -402,15 +386,17 @@ input_columns_names = ['Плотность, кг/м3','модуль упруго
 output_columns_names = ['Соотношение матрица-наполнитель']
 x = df_norm[input_columns_names]
 y = df_norm[output_columns_names]
+```
 Просмотр статистики набора данных
-
+```
 print(x.shape, y.shape)
 
 seaborn.pairplot(pd.DataFrame(np.column_stack([x, y])), diag_kind='kde')
 
 pd.DataFrame(np.column_stack(([x, y])))
-Создание нейросети
-
+```
+## Создание нейросети
+```
 from keras.models import Sequential
 from keras import models
 
@@ -437,8 +423,9 @@ plt.plot(df)
 score = model.evaluate(x_test, y_test, verbose=1)
 print('Потери на тесте:', score[0])
 print('Точность на тесте:', score[1])
+```
 Просмотр рекомендованных данных Соотношения матрица-наполнитель
-
+```
 x
 
 prediction = model.predict(x)
@@ -447,7 +434,8 @@ prediction
 Статистика
 
 np.mean((y-prediction)*(y-prediction), axis=0)
-Сохранение модели
+```
+## Сохранение модели
 
 model_path = 'C:/Users/Alexandra/Desktop/вкр/models/my_model_2'
 model.save(model_path)
