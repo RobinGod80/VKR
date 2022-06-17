@@ -291,7 +291,7 @@ Ir_upr_result = pd.DataFrame({
 
 Ir_upr_result
 ```
-Решающее дерево
+### Решающее дерево
 ```
 from sklearn.tree import DecisionTreeRegressor
 dt = DecisionTreeRegressor()
